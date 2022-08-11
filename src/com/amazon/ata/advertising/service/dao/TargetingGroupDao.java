@@ -38,7 +38,7 @@ public class TargetingGroupDao implements ReadableDao<String, List<TargetingGrou
      */
     @Override
     public List<TargetingGroup> get(String contentId) {
-        TargetingGroup indexHashKey = new TargetingGroup(null, contentId, 0,  null);
+        TargetingGroup indexHashKey = new TargetingGroup(null, contentId, 0.0,  null);
         DynamoDBQueryExpression<TargetingGroup> queryExpression = new DynamoDBQueryExpression<TargetingGroup>()
                 .withIndexName(TargetingGroup.CONTENT_ID_INDEX)
                 .withConsistentRead(false)
@@ -65,7 +65,7 @@ public class TargetingGroupDao implements ReadableDao<String, List<TargetingGrou
      * @return The updated TargetingGroup
      */
     public TargetingGroup update(String targetingGroupId, double clickThroughRate) {
-        TargetingGroup hashKey = new TargetingGroup(targetingGroupId, null, 0, null);
+        TargetingGroup hashKey = new TargetingGroup(targetingGroupId, null, 0.0, null);
         TargetingGroup targetingGroup = mapper.load(hashKey);
         if (targetingGroup == null) {
             throw new AdvertisementClientException("No targeting group exists with the ID " + targetingGroupId);

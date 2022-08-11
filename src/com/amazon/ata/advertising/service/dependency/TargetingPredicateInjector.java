@@ -1,5 +1,6 @@
 package com.amazon.ata.advertising.service.dependency;
 
+import com.amazon.ata.advertising.service.targeting.TargetingEvaluator;
 import com.amazon.ata.advertising.service.targeting.predicate.AgeTargetingPredicate;
 import com.amazon.ata.advertising.service.targeting.predicate.CategorySpendFrequencyTargetingPredicate;
 import com.amazon.ata.advertising.service.targeting.predicate.CategorySpendValueTargetingPredicate;
@@ -19,6 +20,7 @@ public class TargetingPredicateInjector {
     private final MembersInjector<PrimeBenefitTargetingPredicate> primePredicateInjector;
     private final MembersInjector<ParentPredicate> parentPredicateInjector;
     private final MembersInjector<RecognizedTargetingPredicate> recognizedPredicateInjector;
+//    private final MembersInjector<TargetingEvaluator> targetingEvaluatorInjector;
 
     /**
      * Constructs a targeting predicate injector.
@@ -43,6 +45,7 @@ public class TargetingPredicateInjector {
         this.primePredicateInjector = primePredicateInjector;
         this.parentPredicateInjector = parentPredicateInjector;
         this.recognizedPredicateInjector = recognizedPredicateInjector;
+//        this.targetingEvaluatorInjector = targetingEvaluatorInjector;
     }
 
     /**

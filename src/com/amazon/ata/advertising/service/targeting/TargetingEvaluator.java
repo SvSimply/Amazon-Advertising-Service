@@ -1,11 +1,9 @@
 package com.amazon.ata.advertising.service.targeting;
 
 import com.amazon.ata.advertising.service.model.RequestContext;
-import com.amazon.ata.advertising.service.targeting.predicate.TargetingPredicate;
 import com.amazon.ata.advertising.service.targeting.predicate.TargetingPredicateResult;
 
-import java.util.List;
-import java.util.Objects;
+import javax.inject.Inject;
 
 /**
  * Evaluates TargetingPredicates for a given RequestContext.
@@ -19,6 +17,7 @@ public class TargetingEvaluator {
      * Creates an evaluator for targeting predicates.
      * @param requestContext Context that can be used to evaluate the predicates.
      */
+    @Inject
     public TargetingEvaluator(RequestContext requestContext) {
         this.requestContext = requestContext;
     }

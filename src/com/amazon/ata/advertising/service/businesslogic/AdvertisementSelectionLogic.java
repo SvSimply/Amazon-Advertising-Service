@@ -1,17 +1,23 @@
 package com.amazon.ata.advertising.service.businesslogic;
 
 import com.amazon.ata.advertising.service.dao.ReadableDao;
+import com.amazon.ata.advertising.service.dao.TargetingGroupDao;
 import com.amazon.ata.advertising.service.model.AdvertisementContent;
 import com.amazon.ata.advertising.service.model.EmptyGeneratedAdvertisement;
 import com.amazon.ata.advertising.service.model.GeneratedAdvertisement;
+import com.amazon.ata.advertising.service.model.RequestContext;
+import com.amazon.ata.advertising.service.targeting.TargetingEvaluator;
 import com.amazon.ata.advertising.service.targeting.TargetingGroup;
 
+import com.amazon.ata.advertising.service.targeting.TargetingGroupComparator;
+import com.amazon.ata.advertising.service.targeting.predicate.TargetingPredicateResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 /**
@@ -23,6 +29,7 @@ public class AdvertisementSelectionLogic {
 
     private final ReadableDao<String, List<AdvertisementContent>> contentDao;
     private final ReadableDao<String, List<TargetingGroup>> targetingGroupDao;
+//    private final TargetingEvaluator targetingEvaluator;
     private Random random = new Random();
 
     /**
@@ -32,9 +39,12 @@ public class AdvertisementSelectionLogic {
      */
     @Inject
     public AdvertisementSelectionLogic(ReadableDao<String, List<AdvertisementContent>> contentDao,
-                                       ReadableDao<String, List<TargetingGroup>> targetingGroupDao) {
+                                       ReadableDao<String, List<TargetingGroup>> targetingGroupDao
+//                                       ,TargetingEvaluator targetingEvaluator
+    ) {
         this.contentDao = contentDao;
         this.targetingGroupDao = targetingGroupDao;
+//        this.targetingEvaluator = targetingEvaluator;
     }
 
     /**
@@ -63,10 +73,28 @@ public class AdvertisementSelectionLogic {
             final List<AdvertisementContent> contents = contentDao.get(marketplaceId);
 
             if (CollectionUtils.isNotEmpty(contents)) {
-                AdvertisementContent randomAdvertisementContent = contents.get(random.nextInt(contents.size()));
-                generatedAdvertisement = new GeneratedAdvertisement(randomAdvertisementContent);
-            }
+// Old code
+//                AdvertisementContent randomAdvertisementContent = contents.get(random.nextInt(contents.size()));
+//                generatedAdvertisement = new GeneratedAdvertisement(randomAdvertisementContent);
 
+                TargetingEvaluator evaluator = new TargetingEvaluator(new RequestContext(customerId, marketplaceId));
+
+                Optional<TargetingGroup> targetingGroup = contents.stream()
+                        .map(advertisementContent -> targetingGroupDao.get(advertisementContent.getContentId()))
+                        .flatMap(List::stream)
+                        .sorted(Comparator.comparingDouble(TargetingGroup::getClickThroughRate))
+                        .filter(group -> evaluator.evaluate(group).equals(TargetingPredicateResult.TRUE))
+                        .findFirst();
+
+                if (targetingGroup.isPresent()) {
+                    String contentId = targetingGroup.get().getContentId();
+                    for (AdvertisementContent content : contents) {
+                        if (content.getContentId().equals(contentId)) {
+                            return new GeneratedAdvertisement(content);
+                        }
+                    }
+                }
+            }
         }
 
         return generatedAdvertisement;
