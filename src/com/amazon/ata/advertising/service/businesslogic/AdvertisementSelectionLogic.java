@@ -82,7 +82,7 @@ public class AdvertisementSelectionLogic {
                 Optional<TargetingGroup> targetingGroup = contents.stream()
                         .map(advertisementContent -> targetingGroupDao.get(advertisementContent.getContentId()))
                         .flatMap(List::stream)
-                        .sorted(Comparator.comparingDouble(TargetingGroup::getClickThroughRate))
+                        .sorted(Comparator.comparingDouble(group -> group.getClickThroughRate()*(-1.0)))
                         .filter(group -> evaluator.evaluate(group).equals(TargetingPredicateResult.TRUE))
                         .findFirst();
 
