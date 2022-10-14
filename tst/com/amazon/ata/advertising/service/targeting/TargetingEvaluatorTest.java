@@ -36,7 +36,7 @@ public class TargetingEvaluatorTest {
     public void setup() {
         initMocks(this);
         targetingPredicates = new ArrayList<>();
-        targetingGroup = new TargetingGroup(UUID.randomUUID().toString(), UUID.randomUUID().toString(), 0, targetingPredicates);
+        targetingGroup = new TargetingGroup(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Double.valueOf(0.0), targetingPredicates);
     }
 
     @Test

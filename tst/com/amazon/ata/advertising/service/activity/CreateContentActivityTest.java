@@ -63,7 +63,7 @@ public class CreateContentActivityTest {
                 .withContent(CONTENT)
                 .withTargetingPredicates(Collections.singletonList(recognizedPredicate))
                 .build();
-        TargetingGroup targetingGroup = new TargetingGroup(UUID.randomUUID().toString(), UUID.randomUUID().toString(), 1, Arrays.asList(new RecognizedTargetingPredicate()));
+        TargetingGroup targetingGroup = new TargetingGroup(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Double.valueOf(1.0), Arrays.asList(new RecognizedTargetingPredicate()));
         when(targetingGroupDao.create(eq(CONTENT_ID), argThat(list -> list.size() == 1 && list.get(0) instanceof RecognizedTargetingPredicate))).thenReturn(targetingGroup);
 
         // WHEN
@@ -81,7 +81,7 @@ public class CreateContentActivityTest {
                 .withMarketplaceId(MARKETPLACE_ID)
                 .withContent(CONTENT)
                 .build();
-        TargetingGroup targetingGroup = new TargetingGroup(UUID.randomUUID().toString(), UUID.randomUUID().toString(), 1, new ArrayList<>());
+        TargetingGroup targetingGroup = new TargetingGroup(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Double.valueOf(1.0), new ArrayList<>());
         when(targetingGroupDao.create(CONTENT_ID, new ArrayList<>())).thenReturn(targetingGroup);
 
         // WHEN
